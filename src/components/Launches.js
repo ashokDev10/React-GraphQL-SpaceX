@@ -3,6 +3,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import { Query } from "react-apollo";
 import LaunchItem from "./LaunchItem";
+import MissionKey from "./MissionKey";
 
 const LAUNCHES_QUERY = gql`
   query LaunchesQuery {
@@ -54,6 +55,7 @@ export class Launches extends Component {
         <h1 className="display-4 my-3">
           Launches data Fetching using class component
         </h1>
+        <MissionKey />
         <Query query={LAUNCHES_QUERY}>
           {({ loading, error, data }) => {
             if (loading) return <h3>Loading...</h3>;
