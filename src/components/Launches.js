@@ -1,6 +1,8 @@
-import React from "react";
+import React, { Component, Fragment } from "react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
+import { Query } from "react-apollo";
+import LaunchItem from "./LaunchItem";
 
 const LAUNCHES_QUERY = gql`
   query LaunchesQuery {
@@ -13,10 +15,12 @@ const LAUNCHES_QUERY = gql`
   }
 `;
 
-const Launches = () => {
+// graphql using hooks concept
+
+const LaunchesHooks = () => {
   const { loading, error, data } = useQuery(LAUNCHES_QUERY, {});
 
-  if (loading) return null;
+  if (loading) return <h3>Loading...</h3>;
   if (error) {
     console.log("Error= " + error);
     console.log("DATA= " + data);
@@ -40,6 +44,42 @@ const Launches = () => {
     </div>
   );
 };
+
+// graphql class component
+
+export class Launches extends Component {
+  render() {
+    return (
+      <Fragment>
+        <h1 className="display-4 my-3">
+          Launches data Fetching using class component
+        </h1>
+        <Query query={LAUNCHES_QUERY}>
+          {({ loading, error, data }) => {
+            if (loading) return <h3>Loading...</h3>;
+            if (error) {
+              console.log("Error: " + error);
+              return <h3>Error: {error}</h3>;
+            }
+            return (
+              <Fragment>
+                {data.launches.map((launch) => (
+                  <LaunchItem
+                    launch={launch}
+                    key={launch.flight_number}
+                    mission_name={launch.mission_name}
+                    launch_date={launch.launch_date_local}
+                    launch_success={launch.launch_success}
+                  />
+                ))}
+              </Fragment>
+            );
+          }}
+        </Query>
+      </Fragment>
+    );
+  }
+}
 
 export default Launches;
 
